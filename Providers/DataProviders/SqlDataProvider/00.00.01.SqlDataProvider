@@ -1,0 +1,184 @@
+﻿
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for {databaseOwner} and {objectQualifier}  *****/
+/*****                                                  *****/
+/************************************************************/
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}Thumbnail]') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+	CREATE TABLE {databaseOwner}{objectQualifier}Thumbnail
+		(
+		ID int NOT NULL IDENTITY (1, 1),
+		Name nvarchar(50) NOT NULL,
+		ImgPath nvarchar(250) NULL,
+		Caption nvarchar(50) NULL,
+		Description nvarchar(250) NULL,
+		FilePath nvarchar(250) NULL,
+		CreatedByUserID int NOT NULL,
+		CreatedOnDate datetime NOT NULL,
+		LastModifiedByUserID int NOT NULL,
+		LastModifiedOnDate datetime NOT NULL,
+		ModuleID int NOT NULL,
+		ContentItemId int NULL
+		)  ON [PRIMARY]
+
+	ALTER TABLE {databaseOwner}{objectQualifier}Thumbnail ADD CONSTRAINT
+		PK_{objectQualifier}Thumbnail PRIMARY KEY CLUSTERED 
+		(
+		ID
+		) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+END
+
+GO
+
+/** Drop Existing Stored Procedures **/
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}Thumbnail_AddThumbnail]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}{objectQualifier}Thumbnail_AddThumbnail
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}Thumbnail_GetThumbnail]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}{objectQualifier}Thumbnail_GetThumbnail
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}Thumbnail_GetThumbnails]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}{objectQualifier}Thumbnail_GetThumbnails
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}Thumbnail_DeleteThumbnail]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}{objectQualifier}Thumbnail_DeleteThumbnail
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}Thumbnail_DeleteThumbnails]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}{objectQualifier}Thumbnail_DeleteThumbnails
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}Thumbnail_UpdateThumbnail]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}{objectQualifier}Thumbnail_UpdateThumbnail
+GO
+
+/** Create Stored Procedures **/
+
+create procedure {databaseOwner}{objectQualifier}Thumbnail_AddThumbnail
+
+	@Name			nvarchar(50),
+	@ImgPath			nvarchar(250),
+	@Caption		nvarchar(50),
+	@Description	nvarchar(250),
+	@FilePath		nvarchar(250),
+	@CreatedByUserID	int,
+	@CreatedOnDate		datetime,
+	@LastModifiedByUserID			int,
+	@LastModifiedOnDate		datetime,
+	@ModuleID		int,
+	@ContentItemId int
+
+as
+
+INSERT INTO {databaseOwner}{objectQualifier}[Thumbnail]
+           ([Name]
+           ,[ImgPath]
+           ,[Caption]
+           ,[Description]
+           ,[FilePath]
+           ,[CreatedByUserID]
+           ,[CreatedOnDate]
+           ,[LastModifiedByUserID]
+           ,[LastModifiedOnDate]
+           ,[ModuleID]
+		   ,[ContentItemId])
+     VALUES
+           (@Name					
+           ,@ImgPath					
+           ,@Caption				
+           ,@Description			
+           ,@FilePath				
+           ,@CreatedByUserID		
+           ,@CreatedOnDate			
+           ,@LastModifiedByUserID   
+           ,@LastModifiedOnDate		
+           ,@ModuleID
+		   ,@ContentItemId)
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}Thumbnail_GetThumbnail
+
+	@ID int
+
+as
+
+select *
+from {databaseOwner}{objectQualifier}Thumbnail
+where  ID = @ID
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}Thumbnail_GetThumbnails
+
+	@ModuleID int
+
+as
+
+select *
+from {databaseOwner}{objectQualifier}Thumbnail
+where  ModuleID = @ModuleID
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}Thumbnail_UpdateThumbnail
+	@ID int,
+	@Name			nvarchar(50),
+	@ImgPath			nvarchar(250),
+	@Caption		nvarchar(50),
+	@Description	nvarchar(250),
+	@FilePath		nvarchar(250),
+	@LastModifiedByUserID			int,
+	@LastModifiedOnDate		datetime,
+	@ModuleID		int
+
+as
+
+update {databaseOwner}{objectQualifier}Thumbnail
+set   Name = @Name,
+      ImgPath = @ImgPath,
+      Caption = @Caption,
+      Description = @Description,
+      FilePath = @FilePath,
+      LastModifiedByUserID = @LastModifiedByUserID,
+      LastModifiedOnDate = @LastModifiedOnDate,
+      ModuleID = @ModuleID 
+where  ID = @ID
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}Thumbnail_DeleteThumbnail
+
+	@ID int
+
+as
+
+DELETE FROM {databaseOwner}{objectQualifier}Thumbnail
+      WHERE ID = @ID
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}Thumbnail_DeleteThumbnails
+
+	@ModuleID int
+
+as
+
+DELETE FROM {databaseOwner}{objectQualifier}Thumbnail
+      WHERE ModuleID = @ModuleID
+
+GO
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/
